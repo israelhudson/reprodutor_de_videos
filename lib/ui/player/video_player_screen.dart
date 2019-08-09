@@ -12,19 +12,22 @@ class VideoPlayerScreen extends StatefulWidget {
 }
 
 class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
+  bool isShow = false;
   MediaPlayer player;
   MediaFile song1 = MediaFile(
     title: "Song 1",
     type: "video",
     //source: "http://qthttp.apple.com.edgesuite.net/1010qwoeiuryfg/sl.m3u8",
-    source: "https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4",
+    source:
+        "https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4",
     desc: "Note from Apple",
   );
 
   @override
   void initState() {
     // first argument for isBackground next for showNotification.
-    player = MediaPlayerPlugin.create(isBackground: true, showNotification: true);
+    player =
+        MediaPlayerPlugin.create(isBackground: true, showNotification: true);
     initVideo();
     super.initState();
   }
@@ -38,7 +41,17 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   void initVideo() async {
     await player.initialize();
     await player.setSource(song1);
+    await player.valueNotifier.addListener(acao);
     player.play();
+  }
+
+  VoidCallback acao() {
+    if (player.valueNotifier.value.duration.inSeconds == player.valueNotifier.value.position.inSeconds) {
+      setState(() {
+        isShow = true;
+      });
+    }
+  //print(player.valueNotifier.value.position.inSeconds);
   }
 
   @override
@@ -48,11 +61,27 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       VideoProgressIndicator(
         player,
         allowScrubbing: true,
-        padding: EdgeInsets.symmetric(vertical:5.0),
+        padding: EdgeInsets.symmetric(vertical: 5.0),
       ),
-      SizedBox(height:20.0),
-      buildButtons()
+      SizedBox(height: 20.0),
+      buildButtons(),
+      isShow ? Text("FINALIZANDO") : Text("..."),
     ]);
+  }
+
+  bool isFinsh() {
+    if (player.valueNotifier.value.isPlaying) {
+      return false;
+    } else {
+      return true;
+    }
+//    if (player.valueNotifier.addListener(listener)
+//        == Duration(seconds: 3)) {
+//      print("CHEGOU NO 3");
+//      return false;
+//    } else {
+//      return true;
+//    }
   }
 
   Row buildButtons() {
@@ -79,14 +108,15 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
         FlatButton(
           child: Text("Next"),
           onPressed: () {
-            player.playNext();
+            player.retry();
           },
         ),
       ],
     );
   }
 
-  void alert(String text){
-    Toast.show("$text", context, duration: Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM);
+  void alert(String text) {
+    Toast.show("$text", context,
+        duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
   }
 }
