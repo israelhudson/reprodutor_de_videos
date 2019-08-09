@@ -15,11 +15,18 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   bool isShow = false;
   @override
   void initState() {
+
+    initVideo("https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4");
+
+    super.initState();
+  }
+
+  void initVideo(String videoUrl){
     // Create and store the VideoPlayerController. The VideoPlayerController
     // offers several different constructors to play videos from assets, files,
     // or the internet.
     _controller = VideoPlayerController.network(
-      'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+      videoUrl,
     );
 
     // Initialize the controller and store the Future for later use.
@@ -27,17 +34,19 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
 
     // Use the controller to loop the video.
     _controller.setLooping(false);
+    _controller.play();
     _controller.addListener(acao);
-
-    super.initState();
   }
 
   VoidCallback acao() {
-    if (_controller.value.duration.inSeconds
-        == _controller.value.position.inSeconds) {
+    //if (_controller.value.duration.inSeconds == _controller.value.position.inSeconds) {
+    if (_controller.value.initialized && !_controller.value.isPlaying) {
       setState(() {
         isShow = true;
       });
+        print("FINALO");
+      initVideo("https://www.w3schools.com/html/mov_bbb.mp4");
+      //initVideo("http://www.sample-videos.com/video123/mp4/720/big_buck_bunny_720p_20mb.mp4");
     }
     //print(player.valueNotifier.value.position.inSeconds);
   }
