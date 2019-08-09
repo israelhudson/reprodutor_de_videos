@@ -12,7 +12,7 @@ class VideoPlayerScreen extends StatefulWidget {
 class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   VideoPlayerController _controller;
   Future<void> _initializeVideoPlayerFuture;
-
+  bool isShow = false;
   @override
   void initState() {
     // Create and store the VideoPlayerController. The VideoPlayerController
@@ -27,8 +27,19 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
 
     // Use the controller to loop the video.
     _controller.setLooping(false);
+    _controller.addListener(acao);
 
     super.initState();
+  }
+
+  VoidCallback acao() {
+    if (_controller.value.duration.inSeconds
+        == _controller.value.position.inSeconds) {
+      setState(() {
+        isShow = true;
+      });
+    }
+    //print(player.valueNotifier.value.position.inSeconds);
   }
 
   @override
@@ -75,6 +86,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                             color: Colors.white,
                           )),
                     ),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: isShow ? Text("FINALIZANDO") : Text("..."),
+                    )
                   ],
                 ),
               ),
