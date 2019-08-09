@@ -53,6 +53,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.12.5"
+  media_player:
+    dependency: "direct main"
+    description:
+      name: media_player
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.7"
   meta:
     dependency: transitive
     description:
